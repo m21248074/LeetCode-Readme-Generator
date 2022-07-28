@@ -1,0 +1,14 @@
+query getUserProfile($username: String!) {
+	matchedUser(username: $username) {
+		submitStats: submitStatsGlobal {
+			acSubmissionNum {
+				difficulty
+				count
+			}
+		}
+	}
+	allQuestionsCount {
+		difficulty
+		count
+	}
+}    
