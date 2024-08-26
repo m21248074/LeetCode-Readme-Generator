@@ -43,15 +43,7 @@ vim config.json
 {
 	"username": "<Your LeetCode Username>",
 	"csrftoken": "<Your LeetCode CSRF Token>",
-	"LEETCODE_SESSION": "<Your LeetCode Session Code>",
-	"cur_solved": null,
-	"all_solved": null,
-	"cur_easy": null,
-	"all_easy": null,
-	"cur_medium": null,
-	"all_medium": null,
-	"cur_hard": null,
-	"all_hard": null
+	"LEETCODE_SESSION": "<Your LeetCode Session Code>"
 }
 ```
 - `username` correspond to the account on the LeetCode website.
