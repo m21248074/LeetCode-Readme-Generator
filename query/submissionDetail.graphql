@@ -1,0 +1,6 @@
+query submissionDetails($submissionId: Int!) {
+    submissionDetails(submissionId: $submissionId) {
+        code
+    }
+}
+    

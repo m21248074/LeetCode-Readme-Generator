@@ -1,5 +1,4 @@
 import fetch from "node-fetch";
-import * as readline from "node:readline";
 import * as fs from "node:fs/promises";
 
 const LEETCODE_API_ENDPOINT = "https://leetcode.com/graphql";
@@ -94,17 +93,17 @@ async function fetch_leetcode(query, variables) {
   return data;
 }
 
-async function fetch_leetcode_submission(qid, lang) {
-  const response = await fetch(`${LEETCODE_API_SUBMISSION}?qid=${qid}&lang=${lang}`, {
-    method: "get",
-    headers: {
-      'Content-Type': 'application/json',
-      cookie: `csrftoken=${config.csrftoken}; LEETCODE_SESSION=${config['LEETCODE_SESSION']}`
-    }
-  });
-  const json = await response.json();
-  return json.code;
-}
+// async function fetch_leetcode_submission(qid, lang) {
+//   const response = await fetch(`${LEETCODE_API_SUBMISSION}?qid=${qid}&lang=${lang}`, {
+//     method: "get",
+//     headers: {
+//       'Content-Type': 'application/json',
+//       cookie: `csrftoken=${config.csrftoken}; LEETCODE_SESSION=${config['LEETCODE_SESSION']}`
+//     }
+//   });
+//   const json = await response.json();
+//   return json.code;
+// }
 
 async function main() {
   config = JSON.parse(await fs.readFile("./config.json", { encoding: "utf8" }));
@@ -112,6 +111,7 @@ async function main() {
   const userQuery = await fs.readFile("./query/user.graphql", { encoding: "utf8" });
   const problemQuery = await fs.readFile("./query/problem.graphql", { encoding: "utf8" });
   const submissionQuery = await fs.readFile("./query/submission.graphql", { encoding: "utf8" });
+  const submissionDetailQuery = await fs.readFile("./query/submissionDetail.graphql", { encoding: "utf8" });
 
   const user = (await fetch_leetcode(userQuery, { username: config.username })).data;
   user.submission = user.matchedUser.submitStats.acSubmissionNum;
@@ -150,7 +150,9 @@ async function main() {
       lang.add(s.lang);
     for (let l in languages) {
       if (lang.has(l)) {
-        let code = await fetch_leetcode_submission(p.questionId, l);
+        let submission = submissions.find(s => s.lang == l);
+        let code = await fetch_leetcode(submissionDetailQuery, { submissionId: submission.id });
+        code = code.data.submissionDetails.code;
         let id = `${problemObject.id}`.padStart(4, "0");
         const dir = `./result/ProblemSet/${id}.${p.titleSlug}/`;
         await fs.mkdir(dir, { recursive: true });
