@@ -151,7 +151,10 @@ async function main() {
     for (let l in languages) {
       if (lang.has(l)) {
         let submission = submissions.find(s => s.lang == l);
-        let code = await fetch_leetcode(submissionDetailQuery, { submissionId: submission.id });
+        let code = "";
+        do {
+          code = await fetch_leetcode(submissionDetailQuery, { submissionId: submission.id });
+        } while (code.data.submissionDetails == null);
         code = code.data.submissionDetails.code;
         let id = `${problemObject.id}`.padStart(4, "0");
         const dir = `./result/ProblemSet/${id}.${p.titleSlug}/`;
